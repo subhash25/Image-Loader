@@ -1,7 +1,4 @@
 package assignment.imageloader
-
-class ImageDataModel : ArrayList<ImageDataModelItem>()
-
 data class ImageDataModelItem(
     val backupDetails: BackupDetails,
     val coverageURL: String,

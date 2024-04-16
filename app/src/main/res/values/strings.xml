@@ -3,4 +3,5 @@
     <string name="failed_to_fetch_data_from_api">Failed to fetch data from API.</string>
     <string name="failed_to_fetch_data_from_api_response_code">Failed to fetch data from API. Response code: %d</string>
     <string name="no_data_available">No data available</string>
+    <string name="retry">Retry</string>
 </resources>
