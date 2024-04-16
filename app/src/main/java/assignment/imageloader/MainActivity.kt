@@ -18,8 +18,8 @@ import java.net.URL
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
-    private val imageListUrl = "https://picsum.photos/v2/list?page=2&limit=100"
-    private var dataList = listOf<TempModelItem>()
+    private val imageListUrl = "https://acharyaprashant.org/api/v2/content/misc/media-coverages?limit=100"
+    private var dataList = listOf<ImageDataModelItem>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -66,7 +66,7 @@ class MainActivity : AppCompatActivity() {
         binding.rvList.adapter = adapter
         binding.rvList.layoutManager = GridLayoutManager(this, 3)
     }
-    private fun fetchUsersFromApi(): List<TempModelItem> {
+    private fun fetchUsersFromApi(): List<ImageDataModelItem> {
         val connection = URL(imageListUrl).openConnection() as HttpURLConnection
         connection.requestMethod = "GET"
         val responseCode = connection.responseCode
@@ -74,7 +74,7 @@ class MainActivity : AppCompatActivity() {
         if (responseCode == HttpURLConnection.HTTP_OK) {
             val inputStream = connection.inputStream
             val responseText = inputStream.bufferedReader().use { it.readText() }
-            return Gson().fromJson(responseText, Array<TempModelItem>::class.java).toList()
+            return Gson().fromJson(responseText, Array<ImageDataModelItem>::class.java).toList()
         } else {
             runOnUiThread {
                 binding.gpRetry.isVisible = true

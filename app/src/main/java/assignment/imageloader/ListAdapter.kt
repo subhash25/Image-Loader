@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 
-class ListAdapter (private val dataList: List<TempModelItem>) :
+class ListAdapter(private val dataList: List<ImageDataModelItem>) :
     RecyclerView.Adapter<ListAdapter.ViewHolder>() {
 
     // ViewHolder class to hold references to views
@@ -23,10 +23,13 @@ class ListAdapter (private val dataList: List<TempModelItem>) :
 
     // Replace the contents of a view (invoked by the layout manager)
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        ImageLoader.loadImage(dataList[position].download_url, holder.imageView)
+        val imageThumbnail = dataList[position].thumbnail
+        val imageUrl =
+            "${imageThumbnail.domain}/${imageThumbnail.basePath}/0/${imageThumbnail.key}"
+
+        ImageLoader.loadImage(imageUrl, holder.imageView)
     }
 
-    // Return the size of your dataset (invoked by the layout manager)
     override fun getItemCount(): Int {
         return dataList.size
     }
