@@ -1,14 +1,20 @@
 package assignment.imageloader
 
+import android.content.Context
+import android.graphics.Bitmap
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
-class ListAdapter(private val dataList: List<ImageDataModelItem>) :
+class ListAdapter(private val dataList: List<ImageDataModelItem>,private val context: Context) :
     RecyclerView.Adapter<ListAdapter.ViewHolder>() {
-
+    private val imageLoader = EfficientImageLoader(context)
     // ViewHolder class to hold references to views
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val imageView: ImageView = itemView.findViewById(R.id.imageview)
@@ -26,8 +32,16 @@ class ListAdapter(private val dataList: List<ImageDataModelItem>) :
         val imageThumbnail = dataList[position].thumbnail
         val imageUrl =
             "${imageThumbnail.domain}/${imageThumbnail.basePath}/0/${imageThumbnail.key}"
-
-        ImageLoader.loadImage(imageUrl, holder.imageView)
+        //holder.imageView.setImageBitmap(null)
+        CoroutineScope(Dispatchers.Main).launch {
+            val bitmap = imageLoader.loadImage(imageUrl)
+            bitmap?.let {
+                holder.imageView.setImageBitmap(it)
+            } ?: run {
+                // Set placeholder image or handle error
+                holder.imageView.setImageResource(R.drawable.placeholder)
+            }
+        }
     }
 
     override fun getItemCount(): Int {

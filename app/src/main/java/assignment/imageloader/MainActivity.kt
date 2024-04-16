@@ -62,7 +62,7 @@ class MainActivity : AppCompatActivity() {
     private fun initViews() {
         binding.progressBar.isVisible = false
         binding.rvList.isVisible = true
-        val adapter = ListAdapter(dataList)
+        val adapter = ListAdapter(dataList,this)
         binding.rvList.adapter = adapter
         binding.rvList.layoutManager = GridLayoutManager(this, 3)
     }
