@@ -11,13 +11,12 @@ import java.io.FileOutputStream
 import java.net.HttpURLConnection
 import java.net.URL
 
-class EfficientImageLoader(private val context: Context) {
+class EfficientImageLoader(context: Context) {
     private val MEMORY_CACHE_SIZE = 4 * 1024 * 1024 // 4MB
     private val memoryCache = LruCache<String, Bitmap>(MEMORY_CACHE_SIZE)
-    private val cacheDir: File
+    private val cacheDir: File = File(context.cacheDir, "custom_cache_directory")
 
     init {
-        cacheDir = File(context.cacheDir, "custom_cache_directory")
         if (!cacheDir.exists()) {
             cacheDir.mkdirs()
         }
@@ -35,6 +34,13 @@ class EfficientImageLoader(private val context: Context) {
         }
 
         return downloadBitmap(url)
+    }
+    suspend fun checkAndDownload(url:String){
+
+        if (memoryCache.get(url) == null && loadBitmapFromDiskCache(url) == null) {
+            downloadBitmap(url)
+        }else
+            return
     }
 
     private suspend fun downloadBitmap(url: String): Bitmap? = withContext(Dispatchers.IO) {

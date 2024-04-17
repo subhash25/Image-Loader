@@ -40,8 +40,8 @@ class MainActivity : AppCompatActivity() {
     private fun fetchData() {
         GlobalScope.launch(Dispatchers.IO) {
             dataList = fetchUsersFromApi()
-            runOnUiThread {
-                dataList?.let {
+            dataList?.let {
+                runOnUiThread {
                     if (it.isNotEmpty()) {
                         initList(it)
                     } else {
@@ -63,12 +63,23 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    @OptIn(DelicateCoroutinesApi::class)
     private fun initList(list: List<ImageDataModelItem>) {
         binding.progressBar.isVisible = false
         binding.rvList.isVisible = true
         val adapter = ListAdapter(list, this)
         binding.rvList.adapter = adapter
         binding.rvList.layoutManager = GridLayoutManager(this, 3)
+        val layoutManager = binding.rvList.layoutManager
+        val visibleItemCount = layoutManager?.childCount ?: 0
+        val imageDownloader = EfficientImageLoader(this@MainActivity)
+        //prefetch off grid image
+        GlobalScope.launch(Dispatchers.IO) {
+            list.forEachIndexed { i, imageData ->
+                if (i > visibleItemCount)
+                    imageDownloader.checkAndDownload(imageData.thumbnail.buildThumbnailUrl())
+            }
+        }
     }
 
     private fun fetchUsersFromApi(): List<ImageDataModelItem>? {
