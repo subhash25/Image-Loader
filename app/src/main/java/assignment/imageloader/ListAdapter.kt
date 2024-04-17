@@ -26,8 +26,7 @@ class ListAdapter(private val dataList: List<ImageDataModelItem>, context: Conte
     }
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val imageThumbnail = dataList[position].thumbnail
-        holder.currentImageUrl =
-            "${imageThumbnail.domain}/${imageThumbnail.basePath}/0/${imageThumbnail.key}"
+        holder.currentImageUrl =imageThumbnail.buildThumbnailUrl()
         holder.imageView.setImageResource(R.drawable.placeholder)
         val job = CoroutineScope(Dispatchers.Main).launch {
             val bitmap = imageLoader.loadImage(holder.currentImageUrl)
